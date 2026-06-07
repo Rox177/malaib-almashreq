@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/context/LanguageContext";
+import { formatTime12Hour } from "@/utils/timeSlots";
 
 interface TimeSlotPickerProps {
   slots: string[];
@@ -18,9 +19,7 @@ export default function TimeSlotPicker({
   const { t } = useLanguage();
 
   if (slots.length === 0) {
-    return (
-      <p className="text-sm text-gray-500">{t("noCourts")}</p>
-    );
+    return <p className="text-sm text-gray-500">{t("noCourts")}</p>;
   }
 
   return (
@@ -43,7 +42,7 @@ export default function TimeSlotPicker({
                   : "border border-gray-200 bg-white text-navy hover:border-sport hover:bg-sport/5"
             }`}
           >
-            {slot}
+            {formatTime12Hour(slot)}
           </button>
         );
       })}
