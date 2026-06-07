@@ -13,7 +13,7 @@ export const courts: Court[] = [
     capacity: 22,
     pricePerHour: 20000,
     location: "Al-Mashreq University",
-    openingHours: { start: "08:00", end: "22:00" },
+    openingHours: { start: "16:00", end: "00:00" },
     image: "/images/soccer.jpg",
     facilities: [
       { ar: "عشب صناعي", en: "Artificial turf" },
@@ -32,7 +32,7 @@ export const courts: Court[] = [
     capacity: 4,
     pricePerHour: 25000,
     location: "Al-Mashreq University",
-    openingHours: { start: "08:00", end: "21:00" },
+    openingHours: { start: "16:00", end: "00:00" },
     image: "/images/tennis.jpg",
     facilities: [
       { ar: "سطح أكريليك", en: "Acrylic surface" },
@@ -52,7 +52,7 @@ export const courts: Court[] = [
     capacity: 10,
     pricePerHour: 25000,
     location: "Al-Mashreq University",
-    openingHours: { start: "08:00", end: "22:00" },
+    openingHours: { start: "16:00", end: "00:00" },
     image: "/images/basketball.jpg",
     facilities: [
       { ar: "لوحات زجاجية", en: "Glass backboards" },
@@ -72,7 +72,7 @@ export const courts: Court[] = [
     capacity: 12,
     pricePerHour: 25000,
     location: "Al-Mashreq University",
-    openingHours: { start: "08:00", end: "21:00" },
+    openingHours: { start: "16:00", end: "00:00" },
     image: "/images/volleyball.jpg",
     facilities: [
       { ar: "شبكة رسمية", en: "Official net" },
