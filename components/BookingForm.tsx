@@ -10,6 +10,7 @@ import {
   getUnavailableSlots,
   isSlotBooked,
   getMinDate,
+  formatTime12Hour,
 } from "@/utils/timeSlots";
 import TimeSlotPicker from "./TimeSlotPicker";
 
@@ -18,6 +19,7 @@ interface BookingFormProps {
 }
 
 const DURATION_OPTIONS = [1, 2, 3];
+const OWNER_WHATSAPP_NUMBER = "9647732077551";
 
 export default function BookingForm({ court }: BookingFormProps) {
   const { lang, t } = useLanguage();
@@ -74,6 +76,26 @@ export default function BookingForm({ court }: BookingFormProps) {
     }
 
     addBooking(formData, courtName);
+
+    const whatsappMessage = `طلب حجز جديد - ملاعب المشرق
+
+الاسم: ${formData.fullName}
+رقم الهاتف: ${formData.phone}
+الرقم الجامعي: ${formData.studentId || "غير مذكور"}
+الملعب: ${courtName}
+التاريخ: ${formData.date}
+الوقت: ${formatTime12Hour(formData.time)}
+المدة: ${formData.duration} ساعة
+الملاحظات: ${formData.notes || "لا توجد ملاحظات"}
+
+يرجى تأكيد الحجز.`;
+
+    const whatsappUrl = `https://wa.me/${OWNER_WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      whatsappMessage
+    )}`;
+
+    window.open(whatsappUrl, "_blank");
+
     setSubmitted(true);
     setErrors({});
   };
