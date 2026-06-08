@@ -2,6 +2,7 @@
 
 import { Booking } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
+import { formatTime12Hour } from "@/utils/timeSlots";
 
 interface AdminBookingTableProps {
   bookings: Booking[];
@@ -15,6 +16,53 @@ const statusStyles: Record<Booking["status"], string> = {
   confirmed: "bg-green-100 text-green-800",
   cancelled: "bg-red-100 text-red-800",
 };
+
+function normalizePhoneForWhatsApp(phone: string) {
+  const cleaned = phone.replace(/\D/g, "");
+
+  if (cleaned.startsWith("964")) {
+    return cleaned;
+  }
+
+  if (cleaned.startsWith("0")) {
+    return `964${cleaned.slice(1)}`;
+  }
+
+  return cleaned;
+}
+
+function openWhatsAppMessage(phone: string, message: string) {
+  const whatsappPhone = normalizePhoneForWhatsApp(phone);
+  const url = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(
+    message
+  )}`;
+
+  window.open(url, "_blank");
+}
+
+function createConfirmationMessage(booking: Booking) {
+  return `تم تأكيد حجزك في ملاعب المشرق ✅
+
+الاسم: ${booking.fullName}
+الملعب: ${booking.courtName}
+التاريخ: ${booking.date}
+الوقت: ${formatTime12Hour(booking.time)}
+المدة: ${booking.duration} ساعة
+
+يرجى الحضور قبل موعد الحجز بـ 10 دقائق.
+شكرًا لاختياركم ملاعب المشرق.`;
+}
+
+function createDeclineMessage(booking: Booking) {
+  return `نعتذر، لم يتم تأكيد حجزك في ملاعب المشرق.
+
+الاسم: ${booking.fullName}
+الملعب: ${booking.courtName}
+التاريخ: ${booking.date}
+الوقت: ${formatTime12Hour(booking.time)}
+
+يرجى اختيار وقت آخر أو التواصل مع الإدارة لمعرفة الأوقات المتاحة.`;
+}
 
 export default function AdminBookingTable({
   bookings,
@@ -35,7 +83,7 @@ export default function AdminBookingTable({
 
   return (
     <div className="overflow-x-auto rounded-2xl bg-white shadow-card">
-      <table className="w-full min-w-[800px] text-sm">
+      <table className="w-full min-w-[1000px] text-sm">
         <thead>
           <tr className="border-b border-gray-100 bg-gray-50">
             <th className="px-4 py-3 text-start font-semibold text-navy">
@@ -64,6 +112,7 @@ export default function AdminBookingTable({
             </th>
           </tr>
         </thead>
+
         <tbody>
           {bookings.map((booking) => (
             <tr
@@ -73,15 +122,23 @@ export default function AdminBookingTable({
               <td className="px-4 py-3 font-medium text-navy">
                 {booking.fullName}
               </td>
+
               <td className="px-4 py-3 text-gray-600" dir="ltr">
                 {booking.phone}
               </td>
+
               <td className="px-4 py-3 text-gray-600">{booking.courtName}</td>
+
               <td className="px-4 py-3 text-gray-600">{booking.date}</td>
-              <td className="px-4 py-3 text-gray-600">{booking.time}</td>
+
+              <td className="px-4 py-3 text-gray-600">
+                {formatTime12Hour(booking.time)}
+              </td>
+
               <td className="px-4 py-3 text-gray-600">
                 {booking.duration} {t("hours")}
               </td>
+
               <td className="px-4 py-3">
                 <span
                   className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusStyles[booking.status]}`}
@@ -89,8 +146,9 @@ export default function AdminBookingTable({
                   {t(booking.status)}
                 </span>
               </td>
+
               <td className="px-4 py-3">
-                <div className="flex gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
                   {booking.status === "pending" && (
                     <button
                       onClick={() => onConfirm(booking.id)}
@@ -99,6 +157,7 @@ export default function AdminBookingTable({
                       {t("confirm")}
                     </button>
                   )}
+
                   {booking.status !== "cancelled" && (
                     <button
                       onClick={() => onCancel(booking.id)}
@@ -107,6 +166,31 @@ export default function AdminBookingTable({
                       {t("cancel")}
                     </button>
                   )}
+
+                  <button
+                    onClick={() =>
+                      openWhatsAppMessage(
+                        booking.phone,
+                        createConfirmationMessage(booking)
+                      )
+                    }
+                    className="rounded-lg bg-green-600 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-green-700"
+                  >
+                    WhatsApp Confirm
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      openWhatsAppMessage(
+                        booking.phone,
+                        createDeclineMessage(booking)
+                      )
+                    }
+                    className="rounded-lg bg-orange-500 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-orange-600"
+                  >
+                    WhatsApp Decline
+                  </button>
+
                   <button
                     onClick={() => onDelete(booking.id)}
                     className="rounded-lg bg-red-500 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-red-600"
