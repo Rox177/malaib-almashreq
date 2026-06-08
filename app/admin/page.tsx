@@ -2,12 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Booking } from "@/types";
-import {
-  getBookings,
-  updateBookingStatus,
-  deleteBooking,
-  getBookingStats,
-} from "@/utils/bookings";
+import { bookingRepository, getBookingStats } from "@/utils/bookings";
 import { useLanguage } from "@/context/LanguageContext";
 import AdminBookingTable from "@/components/AdminBookingTable";
 
@@ -17,9 +12,13 @@ import AdminBookingTable from "@/components/AdminBookingTable";
 export default function AdminPage() {
   const { t } = useLanguage();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(() => {
-    setBookings(getBookings());
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    const allBookings = await bookingRepository.getAll();
+    setBookings(allBookings);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -28,18 +27,18 @@ export default function AdminPage() {
 
   const stats = getBookingStats(bookings);
 
-  const handleConfirm = (id: string) => {
-    updateBookingStatus(id, "confirmed");
+  const handleConfirm = async (id: string) => {
+    await bookingRepository.updateStatus(id, "confirmed");
     refresh();
   };
 
-  const handleCancel = (id: string) => {
-    updateBookingStatus(id, "cancelled");
+  const handleCancel = async (id: string) => {
+    await bookingRepository.updateStatus(id, "cancelled");
     refresh();
   };
 
-  const handleDelete = (id: string) => {
-    deleteBooking(id);
+  const handleDelete = async (id: string) => {
+    await bookingRepository.delete(id);
     refresh();
   };
 
@@ -88,12 +87,19 @@ export default function AdminPage() {
       <h2 className="mb-4 text-xl font-bold text-navy">
         {t("bookingRequests")}
       </h2>
-      <AdminBookingTable
-        bookings={bookings}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        onDelete={handleDelete}
-      />
+
+      {loading ? (
+        <div className="rounded-2xl bg-white p-8 text-center text-gray-500 shadow-card">
+          Loading bookings...
+        </div>
+      ) : (
+        <AdminBookingTable
+          bookings={bookings}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }
