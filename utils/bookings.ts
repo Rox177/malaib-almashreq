@@ -1,9 +1,43 @@
 import { Booking, BookingFormData } from "@/types";
+import { supabase } from "@/utils/supabase";
 
 const STORAGE_KEY = "malaib-bookings";
 
+type SupabaseBookingRow = {
+  id: string;
+  full_name: string;
+  phone: string;
+  student_id: string | null;
+  court_id: string;
+  court_name: string;
+  date: string;
+  time: string;
+  duration: number;
+  notes: string | null;
+  status: Booking["status"];
+  created_at: string;
+};
+
+function mapSupabaseBooking(row: SupabaseBookingRow): Booking {
+  return {
+    id: row.id,
+    fullName: row.full_name,
+    phone: row.phone,
+    studentId: row.student_id || "",
+    courtId: row.court_id,
+    courtName: row.court_name,
+    date: row.date,
+    time: row.time,
+    duration: row.duration,
+    notes: row.notes || "",
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
+
 export function getBookings(): Booking[] {
   if (typeof window === "undefined") return [];
+
   try {
     const data = localStorage.getItem(STORAGE_KEY);
     return data ? JSON.parse(data) : [];
@@ -43,8 +77,10 @@ export function addBooking(
 ): Booking {
   const bookings = getBookings();
   const newBooking = createBooking(formData, courtName);
+
   bookings.push(newBooking);
   saveBookings(bookings);
+
   return newBooking;
 }
 
@@ -53,7 +89,8 @@ export function updateBookingStatus(
   status: Booking["status"]
 ): void {
   const bookings = getBookings();
-  const index = bookings.findIndex((b) => b.id === id);
+  const index = bookings.findIndex((booking) => booking.id === id);
+
   if (index !== -1) {
     bookings[index].status = status;
     saveBookings(bookings);
@@ -61,20 +98,21 @@ export function updateBookingStatus(
 }
 
 export function deleteBooking(id: string): void {
-  const bookings = getBookings().filter((b) => b.id !== id);
+  const bookings = getBookings().filter((booking) => booking.id !== id);
   saveBookings(bookings);
 }
 
 export function getBookingStats(bookings: Booking[]) {
   return {
     total: bookings.length,
-    pending: bookings.filter((b) => b.status === "pending").length,
-    confirmed: bookings.filter((b) => b.status === "confirmed").length,
-    cancelled: bookings.filter((b) => b.status === "cancelled").length,
+    pending: bookings.filter((booking) => booking.status === "pending").length,
+    confirmed: bookings.filter((booking) => booking.status === "confirmed")
+      .length,
+    cancelled: bookings.filter((booking) => booking.status === "cancelled")
+      .length,
   };
 }
 
-// Future: replace localStorage calls with Firebase/Supabase adapter
 export interface BookingRepository {
   getAll(): Promise<Booking[]>;
   add(booking: BookingFormData, courtName: string): Promise<Booking>;
@@ -82,17 +120,87 @@ export interface BookingRepository {
   delete(id: string): Promise<void>;
 }
 
+export const supabaseBookingRepository: BookingRepository = {
+  async getAll() {
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching bookings:", error);
+      return [];
+    }
+
+    return (data || []).map((row) =>
+      mapSupabaseBooking(row as SupabaseBookingRow)
+    );
+  },
+
+  async add(formData, courtName) {
+    const { data, error } = await supabase
+      .from("bookings")
+      .insert({
+        full_name: formData.fullName,
+        phone: formData.phone,
+        student_id: formData.studentId || null,
+        court_id: formData.courtId,
+        court_name: courtName,
+        date: formData.date,
+        time: formData.time,
+        duration: formData.duration,
+        notes: formData.notes || null,
+        status: "pending",
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding booking:", error);
+      throw error;
+    }
+
+    return mapSupabaseBooking(data as SupabaseBookingRow);
+  },
+
+  async updateStatus(id, status) {
+    const { error } = await supabase
+      .from("bookings")
+      .update({ status })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating booking:", error);
+      throw error;
+    }
+  },
+
+  async delete(id) {
+    const { error } = await supabase.from("bookings").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting booking:", error);
+      throw error;
+    }
+  },
+};
+
 export const localBookingRepository: BookingRepository = {
   async getAll() {
     return getBookings();
   },
+
   async add(formData, courtName) {
     return addBooking(formData, courtName);
   },
+
   async updateStatus(id, status) {
     updateBookingStatus(id, status);
   },
+
   async delete(id) {
     deleteBooking(id);
   },
 };
+
+export const bookingRepository = supabaseBookingRepository;
