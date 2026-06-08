@@ -2,6 +2,16 @@ import { Language } from "@/types";
 
 export const translations = {
   ar: {
+    howItWorks: "طريقة الحجز",
+  howItWorksDesc: "خطوات بسيطة تساعد الطالب أو الزائر على إرسال طلب الحجز بسهولة.",
+  chooseCourt: "اختر الملعب",
+  chooseCourtDesc: "تصفح الملاعب المتاحة واختر الملعب المناسب.",
+  selectDateTime: "حدد التاريخ والوقت",
+  selectDateTimeDesc: "اختر اليوم والساعة المناسبة حسب الأوقات المتاحة.",
+  sendRequest: "أرسل طلب الحجز",
+  sendRequestDesc: "املأ بياناتك وسيتم إرسال الطلب للإدارة.",
+  waitConfirmation: "انتظر التأكيد",
+  waitConfirmationDesc: "تقوم الإدارة بمراجعة الطلب وتأكيد الحجز.",
     appName: "ملاعب المشرق",
     appSubtitle: "احجز ملعبك بسهولة داخل جامعة المشرق",
     bookNow: "احجز الآن",
@@ -82,6 +92,16 @@ export const translations = {
     affordableDesc: "أسعار تنافسية للطلاب والموظفين",
   },
   en: {
+    howItWorks: "How booking works",
+    howItWorksDesc: "Simple steps that help students and visitors send booking requests easily.",
+    chooseCourt: "Choose a court",
+    chooseCourtDesc: "Browse the available courts and select the suitable one.",
+    selectDateTime: "Select date and time",
+    selectDateTimeDesc: "Choose the day and hour based on available slots.",
+    sendRequest: "Send request",
+    sendRequestDesc: "Fill in your details and send the request to management.",
+    waitConfirmation: "Wait for confirmation",
+    waitConfirmationDesc: "Management reviews the request and confirms the booking.",
     appName: "Malaib Al-Mashreq",
     appSubtitle: "Book your court easily at Al-Mashreq University",
     bookNow: "Book Now",
