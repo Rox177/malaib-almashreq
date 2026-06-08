@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
-import { Court, BookingFormData } from "@/types";
+import { Court, Booking, BookingFormData } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
-import { addBooking, getBookings } from "@/utils/bookings";
+import { bookingRepository } from "@/utils/bookings";
 import { validateBookingForm, ValidationErrors } from "@/utils/validation";
 import {
   generateTimeSlots,
@@ -38,7 +38,8 @@ export default function BookingForm({ court }: BookingFormProps) {
 
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [submitted, setSubmitted] = useState(false);
-  const [bookings, setBookings] = useState(getBookings());
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const timeSlots = generateTimeSlots(court.openingHours);
   const unavailableSlots = formData.date
@@ -46,10 +47,15 @@ export default function BookingForm({ court }: BookingFormProps) {
     : [];
 
   useEffect(() => {
-    setBookings(getBookings());
+    async function loadBookings() {
+      const allBookings = await bookingRepository.getAll();
+      setBookings(allBookings);
+    }
+
+    loadBookings();
   }, [submitted]);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const validationErrors = validateBookingForm(formData, {
@@ -75,10 +81,24 @@ export default function BookingForm({ court }: BookingFormProps) {
       return;
     }
 
-    addBooking(formData, courtName);
+    setIsSubmitting(true);
+
+    let savedBooking: Booking;
+
+    try {
+      savedBooking = await bookingRepository.add(formData, courtName);
+    } catch (error) {
+      console.error("Booking failed:", error);
+      alert(
+        "لم يتم إرسال الحجز. يرجى التأكد من الاتصال بالإنترنت والمحاولة مرة أخرى."
+      );
+      setIsSubmitting(false);
+      return;
+    }
 
     const whatsappMessage = `طلب حجز جديد - ملاعب المشرق
 
+رقم الحجز: ${savedBooking.id}
 الاسم: ${formData.fullName}
 رقم الهاتف: ${formData.phone}
 الرقم الجامعي: ${formData.studentId || "غير مذكور"}
@@ -96,8 +116,11 @@ export default function BookingForm({ court }: BookingFormProps) {
 
     window.open(whatsappUrl, "_blank");
 
+    console.log("Booking saved:", savedBooking);
+
     setSubmitted(true);
     setErrors({});
+    setIsSubmitting(false);
   };
 
   if (submitted) {
@@ -120,7 +143,6 @@ export default function BookingForm({ court }: BookingFormProps) {
               duration: 1,
               notes: "",
             });
-            setBookings(getBookings());
           }}
           className="mt-6 rounded-xl bg-navy px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light"
         >
@@ -268,9 +290,10 @@ export default function BookingForm({ court }: BookingFormProps) {
 
       <button
         type="submit"
-        className="w-full rounded-xl bg-sport py-3 text-sm font-semibold text-white transition hover:bg-sport-dark"
+        disabled={isSubmitting}
+        className="w-full rounded-xl bg-sport py-3 text-sm font-semibold text-white transition hover:bg-sport-dark disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {t("submit")}
+        {isSubmitting ? "جاري إرسال الحجز..." : t("submit")}
       </button>
     </form>
   );
