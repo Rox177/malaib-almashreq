@@ -16,7 +16,7 @@ export default function TimeSlotPicker({
   selectedTime,
   onSelect,
 }: TimeSlotPickerProps) {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   if (slots.length === 0) {
     return <p className="text-sm text-gray-500">{t("noCourts")}</p>;
@@ -36,13 +36,21 @@ export default function TimeSlotPicker({
             onClick={() => onSelect(slot)}
             className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
               isUnavailable
-                ? "cursor-not-allowed bg-gray-100 text-gray-400 line-through"
+                ? "cursor-not-allowed border border-red-200 bg-red-50 text-red-500"
                 : isSelected
                   ? "bg-sport text-white shadow-md"
                   : "border border-gray-200 bg-white text-navy hover:border-sport hover:bg-sport/5"
             }`}
           >
-            {formatTime12Hour(slot)}
+            <span className={isUnavailable ? "line-through" : ""}>
+              {formatTime12Hour(slot)}
+            </span>
+
+            {isUnavailable && (
+              <span className="mt-1 block text-[10px] font-semibold no-underline">
+                {lang === "ar" ? "محجوز" : "Booked"}
+              </span>
+            )}
           </button>
         );
       })}
