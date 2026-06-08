@@ -9,6 +9,13 @@ const INSTAGRAM_URL = "https://www.instagram.com/stadium.almashreq";
 
 const sports: Sport[] = ["soccer", "tennis", "basketball", "volleyball"];
 
+const sportCourtLinks: Record<Sport, string> = {
+  soccer: "/courts/soccer-1",
+  tennis: "/courts/tennis-1",
+  basketball: "/courts/basketball-1",
+  volleyball: "/courts/volleyball-1",
+};
+
 export default function HomePage() {
   const { t } = useLanguage();
 
@@ -54,7 +61,7 @@ export default function HomePage() {
           {sports.map((sport) => (
             <Link
               key={sport}
-              href="/courts"
+              href={sportCourtLinks[sport]}
               className="group rounded-2xl bg-white p-6 text-center shadow-card transition hover:shadow-card-hover"
             >
               <span className="text-4xl">{sportEmojis[sport]}</span>
