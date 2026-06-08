@@ -104,6 +104,60 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+            {/* How It Works */}
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-navy md:text-3xl">
+            {t("howItWorks")}
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-600 md:text-base">
+            {t("howItWorksDesc")}
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-4">
+          {[
+            {
+              step: "1",
+              icon: "🏟️",
+              title: t("chooseCourt"),
+              desc: t("chooseCourtDesc"),
+            },
+            {
+              step: "2",
+              icon: "📅",
+              title: t("selectDateTime"),
+              desc: t("selectDateTimeDesc"),
+            },
+            {
+              step: "3",
+              icon: "📩",
+              title: t("sendRequest"),
+              desc: t("sendRequestDesc"),
+            },
+            {
+              step: "4",
+              icon: "✅",
+              title: t("waitConfirmation"),
+              desc: t("waitConfirmationDesc"),
+            },
+          ].map((item) => (
+            <div
+              key={item.step}
+              className="relative rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-card"
+            >
+              <div className="absolute -top-4 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full bg-sport text-sm font-bold text-white">
+                {item.step}
+              </div>
+              <div className="mt-3 text-3xl">{item.icon}</div>
+              <h3 className="mt-4 text-base font-bold text-navy">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm text-gray-600">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Instagram */}
       <section className="mx-auto max-w-6xl px-4 py-16">
