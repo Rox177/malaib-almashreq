@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/taha177/code/almashreq studium /app/layout\":[\"static/media/350b852752f8489d-s.p.woff2\",\"static/media/01f0c602c274ea55-s.p.woff2\",\"static/media/e4af272ccee01ff0-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
