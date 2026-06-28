@@ -203,7 +203,7 @@ export default function TrackBookingPage() {
                   <p className="font-bold text-amber-800">{t("pending")}</p>
                   <p className="mt-0.5 text-amber-700/80">
                     {lang === "ar"
-                      ? "تم استلام طلبك ويفحص حالياً من قبل إدارة الكلية. يرجى الانتظار لتأكيده."
+                      ? "تم استلام طلبك يرجى الانتظار لخمس دقائق لحين قبول طلبك."
                       : "Your request has been received and is being reviewed by the administration. Please wait for confirmation."}
                   </p>
                 </div>

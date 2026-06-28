@@ -750,6 +750,9 @@ video {
 .h-full {
   height: 100%;
 }
+.h-11 {
+  height: 2.75rem;
+}
 .min-h-\[52px\] {
   min-height: 52px;
 }
@@ -824,6 +827,9 @@ video {
 }
 .w-px {
   width: 1px;
+}
+.w-11 {
+  width: 2.75rem;
 }
 .min-w-\[1000px\] {
   min-width: 1000px;

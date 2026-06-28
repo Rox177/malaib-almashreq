@@ -48,7 +48,7 @@ export default function HomePage() {
         {/* Content Container */}
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center md:px-6">
           {/* Pretitle Badge */}
-          <div className="mb-6 bg-sport/15 border border-sport/25 text-sport text-xs font-bold rounded-full px-4.5 py-2 inline-flex items-center gap-2 animate-fade-in shadow-xs">
+          <div className="mb-6 bg-sport/15 border border-sport/25 text-sport text-xs font-bold rounded-full px-5 py-2 inline-flex items-center gap-2 animate-fade-in shadow-xs">
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
@@ -104,7 +104,7 @@ export default function HomePage() {
             <div className="w-px bg-white/10" />
             <div className="text-center">
               <p className="text-xl md:text-3xl font-extrabold text-white">
-                {lang === "ar" ? "4:00 م - 12:00 ص" : "4:00 PM - 12:00 AM"}
+                {lang === "ar" ? "4:00  م - 12:00ص " : "4:00 PM - 12:00 AM"}
               </p>
               <p className="text-xs md:text-sm text-white/40 mt-1 font-medium tracking-wide">
                 {lang === "ar" ? "ساعات الحجز" : "Hours"}
