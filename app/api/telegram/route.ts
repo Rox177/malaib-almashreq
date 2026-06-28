@@ -5,7 +5,8 @@ export async function POST(req: Request) {
     const token = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.ADMIN_CHAT_ID;
 
-    console.log("Bot token:", token?.slice(0, 10));
+    console.log("Token length:", token?.length);
+    console.log("Token starts with:", token?.slice(0, 10));
     console.log("Chat ID:", chatId);
 
     const response = await fetch(
