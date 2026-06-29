@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import DirectionWrapper from "@/components/DirectionWrapper";
 import { Analytics } from "@vercel/analytics/next";
 
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
